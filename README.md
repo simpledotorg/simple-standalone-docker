@@ -25,5 +25,16 @@ and reporting views.
 
 It will be much faster in after the init is done. (Only a few seconds)
 
+# Checking the system
 
-# Starting the standalone Simple System
+## Checking that Simple started and is working
+
+Simple Dashboards are exposed on port 3000 localy at the following url
+- http://localhost:3000/
+
+During initialisation, an admin dashboard account is automatically created:
+```
+username: admin@simple.org
+password: XXXXXXXXXXXXXXXX
+```
+
