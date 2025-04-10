@@ -11,16 +11,21 @@ yes | gem sources --add http://rubygems.org
 ###
 bundle config --delete without
 bundle install
-bundle remove flipper flipper-active_record flipper-ui
-bundle add flipper flipper-active_record flipper-ui --version 1.3.4
+#bundle remove flipper flipper-active_record flipper-ui
+#bundle add flipper flipper-active_record flipper-ui --version 1.3.4
 
 ###
 ### Turns on feature flags
 ###
-bundle exec flipper enable :auto_approve_users
+#bundle exec flipper enable :auto_approve_users
 
 ###
 ### Initialises the DB
 ###
 bundle exec rake db:setup
 psql -h postgres -p 5432 -U postgres -f db/structure.sql
+
+###
+### Some more DB init so metabase will be happy
+###
+psql -h postgres -p 5432 -U postgres -d simple-server_test -f db/metabase_db_init.sql
