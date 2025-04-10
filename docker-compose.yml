@@ -14,13 +14,15 @@ services:
     image: metabase/metabase:v0.47.13
     ports:
       - "12345:3000"
+    volumes:
+      - ./metabase/metabase_init.sh:/app/metabase_init.sh
     depends_on:
       server:
         condition: service_healthy
     environment:
       MB_DB_CONNECTION_URI: jdbc:postgresql://postgres:password@postgres:5432/simple-server_test?options=-csearch_path%3Dmetabase
       MB_CONFIG_FILE_PATH: app/config.yml
-
+      MB_API_KEY: 62634bd137850201d4309b3e95ab0b67
 
   redis:
     image: redis:5-alpine
