@@ -27,7 +27,7 @@ It will be much faster in after the init is done. (Only a few seconds)
 
 # Checking the system
 
-## Checking that Simple started and is working
+## Logging into Simple
 
 Simple Dashboards are exposed on port 3000 localy at the following url
 - http://localhost:3000/
@@ -37,4 +37,28 @@ During initialisation, an admin dashboard account is automatically created:
 username: admin@simple.org
 password: XXXXXXXXXXXXXXXX
 ```
+
+## Checking Simple API docs
+
+Simple API documentation is embeded int he application and can be reached with the following URL
+- http://localhost:3000/api-docs/index.html
+
+
+## Checking the data with Metabase.
+
+Metabase is the canonical tool to access Simple Database. This Simple Standalone System comes with a Metabase instance. User provisionning is can't be done as part of the docker initialisation with the Community Version of Metabase so we first have to run a script to create the default user:
+
+```
+docker exec simple-standalone-docker-metabase-1  bash /app/metabase_init.sh
+```
+
+Once this is done, we can log in with the following credentials
+```
+username: user@test.test
+password: MySecretPassword1
+```
+
+We can then have a look at the test data:
+
+
 
