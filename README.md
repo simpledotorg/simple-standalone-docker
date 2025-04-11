@@ -16,12 +16,12 @@ This should create the following containers:
 - simple-standalone-docker-postgres-1
 - simple-standalone-docker-redis-1
 - simple-standalone-docker-server-1
-- simple-standalone-docker-webdb-1
+-  simple-standalone-docker-metabase-1
 
-
-Note: This will take several minutes to initialise the system on the first run. 
-This is because this system initialises a lot of things during the first run, including database test data 
-and reporting views.
+> [!NOTE] 
+> This will take several minutes to initialise the system on the first run. 
+> This is because this system initialises a lot of things during the first run, including Simple Test Data 
+> and reporting views. Metabase also takes a few minutes to initialise. 
 
 It will be much faster in after the init is done. (Only a few seconds)
 
@@ -46,7 +46,11 @@ Simple API documentation is embeded int he application and can be reached with t
 
 ## Checking the data with Metabase.
 
-Metabase is the canonical tool to access Simple Database. This Simple Standalone System comes with a Metabase instance. User provisionning is can't be done as part of the docker initialisation with the Community Version of Metabase so we first have to run a script to create the default user:
+Metabase is the canonical tool to access Simple Database. This Simple Standalone System comes with a Metabase instance. 
+
+> [!NOTE]  
+> User provisionning is can't be done as part of the docker initialisation with the Community Version of Metabase
+> so we first have to run a script to create the default user:
 
 ```
 docker exec simple-standalone-docker-metabase-1  bash /app/metabase_init.sh
