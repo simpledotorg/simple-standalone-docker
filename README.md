@@ -59,7 +59,12 @@ username: user@test.test
 password: MySecretPassword1
 ```
 
-We can then have a look at the test data:
+We can then have a look at the test data with some basic queries:
+
+``` SQL
+select * from patients;
+select * from facilities;
+```
 
 
 
