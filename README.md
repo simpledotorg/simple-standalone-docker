@@ -52,7 +52,8 @@ Metabase is the canonical tool to access Simple Database. This Simple Standalone
 docker exec simple-standalone-docker-metabase-1  bash /app/metabase_init.sh
 ```
 
-Once this is done, we can log in with the following credentials
+Once this is done, we can log  in with the following credentials:
+- http://localhost:12345
 ```
 username: user@test.test
 password: MySecretPassword1
