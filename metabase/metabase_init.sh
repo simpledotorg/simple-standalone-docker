@@ -1,7 +1,8 @@
 #
 # Getting jq
 #
-apk add jq
+sed -i 's/https/http/' /etc/apk/repositories
+apk add --allow-untrusted jq
 
 #
 # Getting the default token
