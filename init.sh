@@ -1,3 +1,8 @@
+###
+### Updates the default password
+###
+find . -type f -name '.env.seed.*' -exec sed -i 's/Resolve2SaveLives/MySecretPassword1/g' {} \;
+
 
 ### 
 ### Hack to make sources available despite security messing up with SSL ...
