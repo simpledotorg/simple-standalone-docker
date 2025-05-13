@@ -35,7 +35,7 @@ Simple Dashboards are exposed on port 3000 localy at the following url
 During initialisation, an admin dashboard account is automatically created:
 ```
 username: admin@simple.org
-password: XXXXXXXXXXXXXXXX
+password: MySecretPassword1
 ```
 
 ## Checking Simple API docs
