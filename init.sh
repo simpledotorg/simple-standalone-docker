@@ -1,21 +1,21 @@
 ###
 ### Updates the default password
 ###
-find . -type f -name '.env.seed.*' -exec sed -i 's/Resolve2SaveLives/MySecretPassword1/g' {} \;
+#find . -type f -name '.env.seed.*' -exec sed -i 's/Resolve2SaveLives/MySecretPassword1/g' {} \;
 
 
 ### 
 ### Hack to make sources available despite security messing up with SSL ...
 ###
-sed -i 's/https/http/g' Gemfile
-gem sources -r https://rubygems.org/
-yes | gem sources --add http://rubygems.org
+#sed -i 's/https/http/g' Gemfile
+#gem sources -r https://rubygems.org/
+#yes | gem sources --add http://rubygems.org
 
 ###
 ### Downloads missing gems for test & development
 ###
-bundle config --delete without
-bundle install
+#bundle config --delete without
+#bundle install
 #bundle remove flipper flipper-active_record flipper-ui
 #bundle add flipper flipper-active_record flipper-ui --version 1.3.4
 

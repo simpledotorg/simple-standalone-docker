@@ -30,7 +30,7 @@ services:
       - "6379:6379"
 
   server:
-    image: simpledotorg/server:3c98932b4d5d4c2842a91572cf9f916e2bc6ad0d
+    image: simpledotorg/server:4166902bcea324c61dbbbb97f09b385dcd44a0b3
     command: bash -c "bash ./start.sh"
     healthcheck:
       test: "curl -f http://localhost:3000/api/v3/ping"
