@@ -30,7 +30,7 @@ services:
       - "6379:6379"
 
   server:
-    image: simpledotorg/server:4166902bcea324c61dbbbb97f09b385dcd44a0b3
+    image: simpledotorg/server:76942744b6b56ce97fae1e06bbd76fe32f097c03
     command: bash -c "bash ./start.sh"
     healthcheck:
       test: "curl -f http://localhost:3000/api/v3/ping"
@@ -41,6 +41,7 @@ services:
       - redis
       - postgres
     volumes:
+#      - ../simple-server/app:/home/app/app
       - ./start.sh:/home/app/start.sh
       - ./init.sh:/home/app/init.sh
       - ./metabase/metabase_db_init.sql:/home/app/db/metabase_db_init.sql
