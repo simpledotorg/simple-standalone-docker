@@ -1,7 +1,7 @@
 ###
 ### Updates the default password
 ###
-#find . -type f -name '.env.seed.*' -exec sed -i 's/Resolve2SaveLives/MySecretPassword1/g' {} \;
+find . -type f -name '.env.seed.*' -exec sed -i 's/Resolve2SaveLives/MySecretPassword1/g' {} \;
 
 
 ### 
