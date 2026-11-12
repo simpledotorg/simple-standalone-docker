@@ -1,0 +1,51 @@
+{
+  "realm": "simple",
+  "enabled": true,
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "groups": [
+    { "name": "admins" },
+    { "name": "sales" }
+  ],
+  "components": {
+    "org.keycloak.storage.UserStorageProvider": [
+      {
+        "name": "legacy-db",
+        "providerId": "simple-legacy-db",
+        "subComponents": {},
+        "config": {
+          "jdbcUrl": ["${LEGACY_DB_URL}"],
+          "dbUser": ["${LEGACY_DB_USER}"],
+          "dbPassword": ["${LEGACY_DB_PASSWORD}"],
+          "enabled": ["true"],
+          "priority": ["0"],
+          "cachePolicy": ["NO_CACHE"]
+        }
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "test-app",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "redirectUris": ["*"],
+      "webOrigins": ["*"],
+      "protocolMappers": [
+        {
+          "name": "groups",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-group-membership-mapper",
+          "config": {
+            "claim.name": "groups",
+            "full.path": "false",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -28,6 +28,26 @@ services:
     image: redis:5-alpine
     ports:
       - "6379:6379"
+      
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.4.0
+    command: start-dev --import-realm
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      # Substituted into the realm JSON below via ${...}
+      LEGACY_DB_URL: jdbc:postgresql://postgres:password@postgres:5432/simple-server_test?options=-csearch_path%3Dkeycloak
+      LEGACY_DB_USER: postgres
+      LEGACY_DB_PASSWORD: password
+    volumes:
+      - ./target/keycloak-legacy-db-provider-1.0.0-SNAPSHOT.jar:/opt/keycloak/providers/keycloak-legacy-db-provider-1.0.0-SNAPSHOT.jar
+      - ./keycloak/import:/opt/keycloak/data/import
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      
 
   server:
     image: simpledotorg/server:76942744b6b56ce97fae1e06bbd76fe32f097c03
