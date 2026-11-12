@@ -37,7 +37,7 @@ services:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin
       # Substituted into the realm JSON below via ${...}
-      LEGACY_DB_URL: jdbc:postgresql://postgres:password@postgres:5432/simple-server_test?options=-csearch_path%3Dkeycloak
+      LEGACY_DB_URL: jdbc:postgresql://postgres:password@postgres:5432/simple-server_test?options=-csearch_path%3Dpublic
       LEGACY_DB_USER: postgres
       LEGACY_DB_PASSWORD: password
     volumes:

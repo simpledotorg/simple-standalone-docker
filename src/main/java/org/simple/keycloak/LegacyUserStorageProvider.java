@@ -1,7 +1,11 @@
 package org.simple.keycloak;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
+import javax.sql.DataSource;
 import org.keycloak.component.ComponentModel;
 import org.keycloak.credential.CredentialInput;
 import org.keycloak.credential.CredentialInputValidator;
@@ -16,16 +20,27 @@ import org.slf4j.LoggerFactory;
 public class LegacyUserStorageProvider
         implements UserStorageProvider, UserLookupProvider, CredentialInputValidator {
 
+    private final DataSource dataSource;
     private static final Logger LOGGER = LoggerFactory.getLogger(LegacyUserStorageProvider.class);
-    
+    private static final String SIMPLE_USER_QUERY = "select \n"
+            + "    email_authentications.id, \n"
+            + "    email,\n"
+            + "    full_name,\n"
+            + "    encrypted_password,\n"
+            + "    access_level\n"
+            + "from email_authentications\n"
+            + "join user_authentications on email_authentications.id = user_authentications.authenticatable_id\n"
+            + "join users on user_authentications.user_id = users.id \n"
+            + "where email=?";
 
     private KeycloakSession ks;
     private ComponentModel cm;
 
-    public LegacyUserStorageProvider(KeycloakSession ks, ComponentModel cm) {
+    public LegacyUserStorageProvider(KeycloakSession ks, ComponentModel cm, DataSource dataSource) {
         LOGGER.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ C");
         this.ks = ks;
         this.cm = cm;
+        this.dataSource = dataSource;
     }
 
     @Override
@@ -40,9 +55,20 @@ public class LegacyUserStorageProvider
 
     @Override
     public UserModel getUserByUsername(RealmModel rm, String userName) {
-        LOGGER.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ D");
-        return new SimpleUserStorage(ks, rm, cm, userName, userName, userName, new ArrayList<String>());
+        LOGGER.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ D\n" + SIMPLE_USER_QUERY);
 
+        try (Connection conn = dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(SIMPLE_USER_QUERY)) {
+            ps.setString(1, userName);
+            try (ResultSet rs = ps.executeQuery()) {
+                LOGGER.info(">>>>" + rs.toString());
+            }
+
+        } catch (SQLException ex) {
+            System.getLogger(LegacyUserStorageProvider.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+
+        return new SimpleUserStorage(ks, rm, cm, userName, new ArrayList<String>());
+        // TODO: move it there
         // throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
@@ -66,7 +92,8 @@ public class LegacyUserStorageProvider
         LOGGER.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ E <" + um.getUsername() + ">");
         LOGGER.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ E <" + ci.getChallengeResponse() + ">");
         LOGGER.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ E <" + ci.toString() + ">");
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+
+        return true;
     }
 
 }

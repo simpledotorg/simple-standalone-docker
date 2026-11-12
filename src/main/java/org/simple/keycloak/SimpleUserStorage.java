@@ -28,11 +28,11 @@ public class SimpleUserStorage extends AbstractUserAdapter.Streams {
     private final Set<RoleModel> roles = new HashSet<>();
 
     public SimpleUserStorage(KeycloakSession session, RealmModel realm, ComponentModel model,
-            String username, String email, String passwordHash, List<String> roleNames) {
+            String username,  List<String> roleNames) {
         super(session, realm, model);
         this.username = username;
-        this.email = email;
-        this.passwordHash = passwordHash;
+        this.email = username;
+        this.passwordHash = username;
         this.storageId = new StorageId(model.getId(), username);
 
         for (String roleName : roleNames) {
