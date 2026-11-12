@@ -14,15 +14,13 @@ public class LegacyUserStorageProviderFactory implements UserStorageProviderFact
 
     @Override
     public LegacyUserStorageProvider create(KeycloakSession ks, ComponentModel cm) {
-
         LOGGER.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ B");
-        return null;
-        // throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return new LegacyUserStorageProvider(ks, cm);
     }
 
     @Override
     public String getId() {
-        LOGGER.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ A");
+        LOGGER.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ A " + ID);
         return ID;
     }
 
