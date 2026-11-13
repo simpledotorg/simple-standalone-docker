@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import javax.sql.DataSource;
 import org.keycloak.component.ComponentModel;
 import org.keycloak.credential.CredentialInput;
@@ -18,11 +17,11 @@ import org.keycloak.storage.user.UserLookupProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LegacyUserStorageProvider
+public class SimpleUserStorageProvider
         implements UserStorageProvider, UserLookupProvider, CredentialInputValidator {
 
     private final DataSource dataSource;
-    private static final Logger LOGGER = LoggerFactory.getLogger(LegacyUserStorageProvider.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleUserStorageProvider.class);
     private static final String SIMPLE_USER_QUERY = "select \n"
             + "    email_authentications.id, \n"
             + "    email,\n"
@@ -37,7 +36,7 @@ public class LegacyUserStorageProvider
     private KeycloakSession ks;
     private ComponentModel cm;
 
-    public LegacyUserStorageProvider(KeycloakSession ks, ComponentModel cm, DataSource dataSource) {
+    public SimpleUserStorageProvider(KeycloakSession ks, ComponentModel cm, DataSource dataSource) {
         LOGGER.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ C");
         this.ks = ks;
         this.cm = cm;
@@ -56,8 +55,6 @@ public class LegacyUserStorageProvider
 
     @Override
     public UserModel getUserByUsername(RealmModel rm, String userName) {
-        LOGGER.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ D0\n" + SIMPLE_USER_QUERY);
-
         try (Connection conn = dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(SIMPLE_USER_QUERY)) {
             ps.setString(1, userName);
             try (ResultSet rs = ps.executeQuery()) {
@@ -75,12 +72,9 @@ public class LegacyUserStorageProvider
                 return currentUser;
             }
         } catch (SQLException ex) {
-            // todo: proper log
-            System.getLogger(LegacyUserStorageProvider.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            LOGGER.warn("Exception while getting user Info", ex);
         }
         return null;
-        // TODO: move it there
-        // throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override

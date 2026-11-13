@@ -9,26 +9,23 @@ import org.keycloak.storage.UserStorageProviderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LegacyUserStorageProviderFactory implements UserStorageProviderFactory<LegacyUserStorageProvider> {
+public class SimpleUserStorageProviderFactory implements UserStorageProviderFactory<SimpleUserStorageProvider> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LegacyUserStorageProviderFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleUserStorageProviderFactory.class);
     public static final String ID = "simple-legacy-db";
     private static final DataSource SIMPLE_DB_DATASOURCE = getDataSource();
 
     @Override
-    public LegacyUserStorageProvider create(KeycloakSession ks, ComponentModel cm) {
-        LOGGER.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ B");
-        return new LegacyUserStorageProvider(ks, cm, SIMPLE_DB_DATASOURCE);
-
+    public SimpleUserStorageProvider create(KeycloakSession ks, ComponentModel cm) {
+        return new SimpleUserStorageProvider(ks, cm, SIMPLE_DB_DATASOURCE);
     }
 
     @Override
     public String getId() {
-        LOGGER.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ A " + ID);
         return ID;
     }
 
-    private static final DataSource getDataSource() {
+    private static DataSource getDataSource() {
         String rawUrl = System.getenv().getOrDefault(
                 "LEGACY_DB_URL",
                 "jdbc:postgresql://postgres:5432/simple-server_test?options=-csearch_path%3Dkeycloak"
