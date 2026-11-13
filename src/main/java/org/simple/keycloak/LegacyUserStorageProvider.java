@@ -12,6 +12,7 @@ import org.keycloak.credential.CredentialInputValidator;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
+import org.keycloak.storage.StorageId;
 import org.keycloak.storage.UserStorageProvider;
 import org.keycloak.storage.user.UserLookupProvider;
 import org.slf4j.Logger;
@@ -49,25 +50,35 @@ public class LegacyUserStorageProvider
     }
 
     @Override
-    public UserModel getUserById(RealmModel rm, String string) {
-        return getUserByUsername(rm, string);
+    public UserModel getUserById(RealmModel rm, String id) {
+        return getUserByUsername(rm, StorageId.externalId(id));
     }
 
     @Override
     public UserModel getUserByUsername(RealmModel rm, String userName) {
-        LOGGER.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ D\n" + SIMPLE_USER_QUERY);
+        LOGGER.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ D0\n" + SIMPLE_USER_QUERY);
 
         try (Connection conn = dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(SIMPLE_USER_QUERY)) {
             ps.setString(1, userName);
             try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    LOGGER.info("No user found for name <{}>", userName);
+                    return null;
+                }
+                LOGGER.info("User found for name <{}>", userName);
+                SimpleUserStorage currentUser = new SimpleUserStorage(ks, rm, cm);
+                currentUser.setUsername(userName);
+                currentUser.setEmail(rs.getString("email"));
+                currentUser.setPasswordHash(rs.getString("encrypted_password"));
+                LOGGER.info("User found for name <{}>, hashed Password is <{}>", currentUser.getUsername(), currentUser.getPasswordHash());
                 LOGGER.info(">>>>" + rs.toString());
+                return currentUser;
             }
-
         } catch (SQLException ex) {
+            // todo: proper log
             System.getLogger(LegacyUserStorageProvider.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
-
-        return new SimpleUserStorage(ks, rm, cm, userName, new ArrayList<String>());
+        return null;
         // TODO: move it there
         // throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
@@ -89,6 +100,7 @@ public class LegacyUserStorageProvider
 
     @Override
     public boolean isValid(RealmModel rm, UserModel um, CredentialInput ci) {
+
         LOGGER.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ E <" + um.getUsername() + ">");
         LOGGER.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ E <" + ci.getChallengeResponse() + ">");
         LOGGER.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ E <" + ci.toString() + ">");

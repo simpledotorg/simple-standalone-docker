@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package org.simple.keycloak;
 
 import java.util.HashSet;
@@ -22,16 +18,20 @@ import org.keycloak.storage.adapter.AbstractUserAdapter;
  */
 public class SimpleUserStorage extends AbstractUserAdapter.Streams {
 
-    private final String username;
-    private final String email;
-    private final String passwordHash;
+    private String username;
+    private String email;
+    private String passwordHash;
     private final Set<RoleModel> roles = new HashSet<>();
 
+    public SimpleUserStorage(KeycloakSession session, RealmModel realm, ComponentModel storageProviderModel) {
+        super(session, realm, storageProviderModel);
+    }
+
     public SimpleUserStorage(KeycloakSession session, RealmModel realm, ComponentModel model,
-            String username,  List<String> roleNames) {
+            String username, List<String> roleNames) {
         super(session, realm, model);
-        this.username = username;
-        this.email = username;
+        this.setUsername(username);
+        this.setEmail(username);
         this.passwordHash = username;
         this.storageId = new StorageId(model.getId(), username);
 
@@ -48,10 +48,26 @@ public class SimpleUserStorage extends AbstractUserAdapter.Streams {
         return username;
     }
 
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
     @Override
     public String getEmail() {
         return email;
     }
+
+    @Override
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    @Override
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    
+    
 
     public String getPasswordHash() {
         return passwordHash;
@@ -64,7 +80,7 @@ public class SimpleUserStorage extends AbstractUserAdapter.Streams {
 
     @Override
     public SubjectCredentialManager credentialManager() {
-         return new UserCredentialManager(session, realm, this);
+        return new UserCredentialManager(session, realm, this);
     }
 
 }

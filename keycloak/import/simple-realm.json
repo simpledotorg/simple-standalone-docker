@@ -3,6 +3,66 @@
   "enabled": true,
   "sslRequired": "none",
   "registrationAllowed": false,
+  "browserFlow": "browser-no-otp",
+  "authenticationFlows": [
+    {
+      "alias": "browser-no-otp",
+      "description": "Browser flow without OTP",
+      "providerId": "basic-flow",
+      "topLevel": true,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {
+          "authenticator": "auth-cookie",
+          "authenticatorFlow": false,
+          "requirement": "ALTERNATIVE",
+          "priority": 10,
+          "userSetupAllowed": false
+        },
+        {
+          "flowAlias": "browser-no-otp-forms",
+          "authenticatorFlow": true,
+          "requirement": "ALTERNATIVE",
+          "priority": 20,
+          "userSetupAllowed": false
+        }
+      ]
+    },
+    {
+      "alias": "browser-no-otp-forms",
+      "description": "Username and password only",
+      "providerId": "basic-flow",
+      "topLevel": false,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {
+          "authenticator": "auth-username-password-form",
+          "authenticatorFlow": false,
+          "requirement": "REQUIRED",
+          "priority": 10,
+          "userSetupAllowed": false
+        }
+      ]
+    }
+  ],
+  "requiredActions": [
+    {
+      "alias": "VERIFY_PROFILE",
+      "name": "Verify Profile",
+      "providerId": "VERIFY_PROFILE",
+      "enabled": false,
+      "defaultAction": false,
+      "priority": 90
+    },
+    {
+      "alias": "UPDATE_PROFILE",
+      "name": "Update Profile",
+      "providerId": "UPDATE_PROFILE",
+      "enabled": false,
+      "defaultAction": false,
+      "priority": 40
+    }
+  ],
   "groups": [
     { "name": "admins" },
     { "name": "sales" }
@@ -14,9 +74,6 @@
         "providerId": "simple-legacy-db",
         "subComponents": {},
         "config": {
-          "jdbcUrl": ["${LEGACY_DB_URL}"],
-          "dbUser": ["${LEGACY_DB_USER}"],
-          "dbPassword": ["${LEGACY_DB_PASSWORD}"],
           "enabled": ["true"],
           "priority": ["0"],
           "cachePolicy": ["NO_CACHE"]
