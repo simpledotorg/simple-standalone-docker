@@ -1,7 +1,9 @@
 package org.simple.keycloak;
 
+import jakarta.ws.rs.core.MultivaluedHashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.keycloak.component.ComponentModel;
 import org.keycloak.credential.UserCredentialManager;
@@ -25,6 +27,18 @@ public class SimpleUserStorage extends AbstractUserAdapter.Streams {
 
     public SimpleUserStorage(KeycloakSession session, RealmModel realm, ComponentModel storageProviderModel) {
         super(session, realm, storageProviderModel);
+    }
+
+    @Override
+    public Map<String, List<String>> getAttributes() {
+        MultivaluedHashMap<String, String> attrs = new MultivaluedHashMap<>();
+        if (getUsername() != null) {
+            attrs.add(USERNAME, getUsername());
+        }
+        if (getEmail() != null) {
+            attrs.add(EMAIL, getEmail());
+        }
+        return attrs;
     }
 
     public SimpleUserStorage(KeycloakSession session, RealmModel realm, ComponentModel model,
@@ -66,8 +80,6 @@ public class SimpleUserStorage extends AbstractUserAdapter.Streams {
     public void setEmail(String email) {
         this.email = email;
     }
-    
-    
 
     public String getPasswordHash() {
         return passwordHash;
@@ -81,6 +93,11 @@ public class SimpleUserStorage extends AbstractUserAdapter.Streams {
     @Override
     public SubjectCredentialManager credentialManager() {
         return new UserCredentialManager(session, realm, this);
+    }
+
+    @Override
+    public boolean isEmailVerified() {
+        return true;
     }
 
 }

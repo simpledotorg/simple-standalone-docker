@@ -63,10 +63,14 @@
       "priority": 40
     }
   ],
-  "groups": [
-    { "name": "admins" },
-    { "name": "sales" }
-  ],
+  "roles": {
+    "realm": [
+      { "name": "manager" },
+      { "name": "power_user" },
+      { "name": "viewer_all" },
+      { "name": "viewer_reports_only" }
+    ]
+  },
   "components": {
     "org.keycloak.storage.UserStorageProvider": [
       {
@@ -88,15 +92,34 @@
       "publicClient": true,
       "standardFlowEnabled": true,
       "redirectUris": ["*"],
-      "webOrigins": ["*"],
+      "webOrigins": ["*"]
+    },
+    {
+      "clientId": "grafana",
+      "name": "Grafana",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "secret": "change-me-grafana-secret",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "rootUrl": "http://localhost:3001",
+      "baseUrl": "http://localhost:3001",
+      "redirectUris": ["http://localhost:3001/login/generic_oauth"],
+      "webOrigins": ["http://localhost:3001"],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:3001/*"
+      },
       "protocolMappers": [
         {
-          "name": "groups",
+          "name": "realm roles",
           "protocol": "openid-connect",
-          "protocolMapper": "oidc-group-membership-mapper",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
           "config": {
-            "claim.name": "groups",
-            "full.path": "false",
+            "claim.name": "roles",
+            "multivalued": "true",
+            "jsonType.label": "String",
             "id.token.claim": "true",
             "access.token.claim": "true",
             "userinfo.token.claim": "true"

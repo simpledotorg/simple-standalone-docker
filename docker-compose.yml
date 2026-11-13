@@ -110,3 +110,16 @@ services:
       SECRET_KEY_BASE: 6e3a553d989615581dfdfcfcb0670b002e5d9d27c38a284a5020107e8ba516789117630f9c7e0ade1d0d7b0b68aeb50df88d8b15ea55dc423246db2984f6e5ef
       PGPASSWORD: password
       PGUSER: postgres
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    ports:
+      - "3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      KEYCLOAK_CLIENT_SECRET: change-me-grafana-secret
+    volumes:
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini:ro
+    depends_on:
+      - keycloak
