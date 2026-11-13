@@ -1,5 +1,6 @@
 package org.simple.keycloak;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -37,7 +38,6 @@ public class SimpleUserStorageProvider
     private ComponentModel cm;
 
     public SimpleUserStorageProvider(KeycloakSession ks, ComponentModel cm, DataSource dataSource) {
-        LOGGER.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ C");
         this.ks = ks;
         this.cm = cm;
         this.dataSource = dataSource;
@@ -94,12 +94,22 @@ public class SimpleUserStorageProvider
 
     @Override
     public boolean isValid(RealmModel rm, UserModel um, CredentialInput ci) {
+        String providedPassword = ci.getChallengeResponse();
+        if (um == null) {
+            LOGGER.warn("UserModel is null, isValid returns false");
+            return false;
+        } else {
+            if (!(um instanceof SimpleUserStorage)) {
+                LOGGER.warn("UserModel is of type <{}> while SimpleUserStorage is expected, isValid returns false", um.getClass());
+                return false;
+            }
+            SimpleUserStorage simpleUser = (SimpleUserStorage) um;
+            String bCryptHash = simpleUser.getPasswordHash();
+            LOGGER.info("Checking password provided for user <{}> against hash <{}>", um.getUsername(), bCryptHash);
 
-        LOGGER.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ E <" + um.getUsername() + ">");
-        LOGGER.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ E <" + ci.getChallengeResponse() + ">");
-        LOGGER.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ E <" + ci.toString() + ">");
-
-        return true;
+            return BCrypt.verifyer()
+                    .verify(providedPassword.toCharArray(), bCryptHash).verified;
+        }
     }
 
 }
